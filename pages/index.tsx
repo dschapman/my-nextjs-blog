@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import { InferGetStaticPropsType } from "next"
 import styled from "@emotion/styled";
+import Link from "next/link"
 
 const Container = styled.div`
     min-height: 100vh;
@@ -47,7 +48,6 @@ const PostTitle = styled.h2`
 const title: string = "My Awesome Blog!";
 
 export default function Home({ posts }: InferGetStaticPropsType<typeof getStaticProps>) {
-    console.log(posts)
   return (
     <Container>
       <Head>
@@ -56,11 +56,14 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
       </Head>
       <Main>
           <BlogTitle>{title}</BlogTitle>
+          <Link href="/about"><a>About this Blog</a></Link>
           <List>
               {posts.map((post) => (
+                <Link href="posts/[id]" as={`posts/${post.id}`}>
                   <ListItem key={post.id}>
                       <PostTitle>{post.title}</PostTitle>
                   </ListItem>
+                </Link>
               ))}
           </List>
       </Main>
