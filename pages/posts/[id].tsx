@@ -1,29 +1,50 @@
-import { Article } from "@components/Article";
-import { GetStaticPropsContext, InferGetStaticPropsType, GetStaticPaths } from "next";
+import { Article, BlogpostImage } from "@components/Article";
+import {
+  GetStaticPropsContext,
+  InferGetStaticPropsType,
+  GetStaticPaths,
+} from "next";
+import Head from "next/head";
+import { title } from "process";
 import { Post } from "../index";
 
-export default function BlogPost({ post }: InferGetStaticPropsType<typeof getStaticProps> ) {
+export default function BlogPost({
+  post,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
+  const { title, body } = post;
   return (
     <Article>
-      <h1>{post.title}</h1>
-      <p>{post.body}</p>
+      <Head>
+        <title>{title}</title>
+        <meta property="og:title" content={title} />
+        <meta
+          property="og:image"
+          content="/d-s-chapman-aIgZHolF4Dg-unsplash.jpg"
+        />
+      </Head>
+      <h1>{title}</h1>
+      <BlogpostImage
+        src="/d-s-chapman-aIgZHolF4Dg-unsplash.jpg"
+        alt="cheetah stretching"
+      />
+      <p>{body}</p>
     </Article>
   );
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const res = await fetch("https://jsonplaceholder.typicode.com/posts")
-  const posts: Post[] = await res.json()
+  const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+  const posts: Post[] = await res.json();
 
-  const paths = posts.map(post => ({
-    params: {id: post.id.toString()},
-  }))
-  
+  const paths = posts.map((post) => ({
+    params: { id: post.id.toString() },
+  }));
+
   return {
     paths,
-    fallback:false,
-  }
-}
+    fallback: false,
+  };
+};
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const { params } = context;
